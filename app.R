@@ -79,8 +79,9 @@ ui <- dashboardPage(
 server <- function(input, output) {
     
     data <- reactive({inse_escolas %>%
-            dplyr::filter(NOME_UF == input$uf)
-    })
+            dplyr::filter(NOME_UF == input$uf) 
+    }) %>%
+        bindCache(input$uf)
     
     output$mean <- renderValueBox({
         
@@ -88,7 +89,7 @@ server <- function(input, output) {
                  "Média do INSE",  
                  icon = icon("balance-scale"),
                  color = "purple")
-    })
+    }) 
     
     output$sd <- renderValueBox({
         
@@ -96,7 +97,7 @@ server <- function(input, output) {
                  "Desvio Padrão do INSE", 
                  icon = icon("balance-scale-right"),
                  color = "green")
-    })
+    }) 
     
     output$count <- renderValueBox({
         
@@ -104,7 +105,7 @@ server <- function(input, output) {
                  "Quantidade de escolas", 
                  icon = icon("calculator"),
                  color = "yellow")
-    })
+    }) 
     
     output$plot1 <- renderPlotly({
         h <- ggplot(data(), aes(x = INSE_VALOR_ABSOLUTO))
@@ -118,7 +119,8 @@ server <- function(input, output) {
         
         ggplotly(plot_1)
         
-    })
+    }) %>%
+        bindCache(data())
     
     output$plot2 <- renderPlotly({
         p <- ggplot(data(), aes(x = INSE_VALOR_ABSOLUTO,
@@ -131,7 +133,8 @@ server <- function(input, output) {
         
         ggplotly(plot_2)
 
-    })
+    }) %>%
+        bindCache(data())
     
     output$plot3 <- renderPlotly({
         f <- ggplot(data(), aes(x = TP_LOCALIZACAO,
@@ -145,7 +148,8 @@ server <- function(input, output) {
         
         ggplotly(plot_3)
         
-    })
+    }) %>%
+        bindCache(data())
     
     output$plot4 <- renderPlotly({
         g <- ggplot(data(), aes(x = TP_DEPENDENCIA,
@@ -159,7 +163,8 @@ server <- function(input, output) {
         
         ggplotly(plot_4)
         
-    })
+    }) %>%
+        bindCache(data())
 }
 
 #### App ####
